@@ -19,8 +19,8 @@ public class OpenAIService {
 
     @Autowired
     public OpenAIService(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("https://api.mistral.ai/v1/chat/completions").build();
-    } // Skal rettes
+        this.webClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
+    }
 
     @Value("${openai.api.key}")
     private String openapikey;
@@ -28,16 +28,17 @@ public class OpenAIService {
     public Map<String, Object> promptOpenAI() {
 
         RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setModel("mistral-small-latest");
+        requestDTO.setModel("gpt-4-turbo"); // Skift evt. til en model, du har adgang til
         requestDTO.setTemperature(1.0);
         requestDTO.setMaxTokens(200);
 
-        List<Message> lstMessages = new ArrayList<>(); //en liste af messages med roller
+        List<Message> lstMessages = new ArrayList<>();
         lstMessages.add(new Message("system", "You are a helpful assistant."));
-        lstMessages.add(new Message("user", "Give a list of 3 good french red wines"));
+        lstMessages.add(new Message("user", "Give a list of 3 good French red wines"));
         requestDTO.setMessages(lstMessages);
 
         ResponseDTO response = webClient.post()
+                .uri("") // OpenAI kræver ingen ekstra URI efter base URL
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(h -> h.setBearerAuth(openapikey))
                 .bodyValue(requestDTO)
@@ -53,7 +54,5 @@ public class OpenAIService {
         map.put("Choices", lst);
 
         return map;
-
-
     }
 }
