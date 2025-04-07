@@ -22,8 +22,40 @@ public class OpenAIService {
         this.webClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
     }
 
-    @Value("${openai.api.key}")
+    @Value("${API_KEY}")
     private String openapikey;
+
+    public Map<String, Object> getMovieAnalysis(String prompt) {
+        RequestDTO requestDTO = new RequestDTO();
+        requestDTO.setModel("gpt-4-turbo-preview");
+        requestDTO.setTemperature(0.7);
+        requestDTO.setMaxTokens(1000);
+        requestDTO.setPresencePenalty(0);
+
+        List<Message> messages = new ArrayList<>();
+        messages.add(new Message("system", "You are a knowledgeable film critic and movie expert. Provide detailed, insightful analysis and recommendations."));
+        messages.add(new Message("user", prompt));
+        requestDTO.setMessages(messages);
+
+        ResponseDTO response = webClient.post()
+                .uri("")
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(h -> h.setBearerAuth(openapikey))
+                .bodyValue(requestDTO)
+                .retrieve()
+                .bodyToMono(ResponseDTO.class)
+                .block();
+
+        Map<String, Object> result = new HashMap<>();
+        if (response != null && !response.getChoices().isEmpty()) {
+            result.put("analysis", response.getChoices().get(0).getMessage().getContent());
+            result.put("usage", response.getUsage());
+        } else {
+            throw new RuntimeException("Failed to get response from OpenAI");
+        }
+
+        return result;
+    }
 
     public Map<String, Object> promptOpenAI() {
 
