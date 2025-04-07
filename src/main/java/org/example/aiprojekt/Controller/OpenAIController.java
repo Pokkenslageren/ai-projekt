@@ -14,7 +14,7 @@ public class OpenAIController {
     @Autowired
     OpenAIService openAIService;
 
-    @Value("${openai.api.key}")
+    @Value("${API_KEY}")
     private String openapikey;
 
     @GetMapping("/key")
