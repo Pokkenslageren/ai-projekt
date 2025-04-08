@@ -18,7 +18,7 @@ public class TMDBConfig {
     public WebClient tmdbWebClient() {
         return WebClient.builder()
                 .baseUrl(baseUrl)
-                .defaultHeader("Authorization", "Bearer " + tmdbApiKey)
+                .defaultHeader("Authorization", "Bearer " + apiKey)
                 .build();
     }
 }
