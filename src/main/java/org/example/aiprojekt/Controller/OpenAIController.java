@@ -14,12 +14,12 @@ public class OpenAIController {
     @Autowired
     OpenAIService openAIService;
 
-    @Value("${API_KEY}")
-    private String openapikey;
+    @Value("${spring.ai.openai.api-key}")
+    private String openApiKey;
 
     @GetMapping("/key")
     public String key() {
-        return openapikey;
+        return openApiKey;
     }
 
     @GetMapping("/test")
@@ -27,6 +27,4 @@ public class OpenAIController {
         Map<String, Object> testmap = openAIService.promptOpenAI();
         return testmap;
     }
-
-
 }
