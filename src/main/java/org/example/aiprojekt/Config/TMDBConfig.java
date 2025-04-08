@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 @Configuration
 public class TMDBConfig {
 
-    @Value("${TMDB_API_KEY}")
+    @Value("${TMDB_ACCESS_TOKEN}")
     private String apiKey;
 
     @Value("${tmdb.api.base-url:https://api.themoviedb.org/3}")
