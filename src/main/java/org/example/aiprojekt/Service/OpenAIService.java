@@ -22,8 +22,8 @@ public class OpenAIService {
         this.webClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
     }
 
-    @Value("${API_KEY}")
-    private String openapikey;
+    @Value("${spring.ai.openai.api-key}")
+    private String openApiKey;
 
     public Map<String, Object> getMovieAnalysis(String prompt) {
         RequestDTO requestDTO = new RequestDTO();
@@ -40,7 +40,7 @@ public class OpenAIService {
         ResponseDTO response = webClient.post()
                 .uri("")
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(h -> h.setBearerAuth(openapikey))
+                .headers(h -> h.setBearerAuth(openApiKey))
                 .bodyValue(requestDTO)
                 .retrieve()
                 .bodyToMono(ResponseDTO.class)
@@ -72,7 +72,7 @@ public class OpenAIService {
         ResponseDTO response = webClient.post()
                 .uri("") // OpenAI kræver ingen ekstra URI efter base URL
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(h -> h.setBearerAuth(openapikey))
+                .headers(h -> h.setBearerAuth(openApiKey))
                 .bodyValue(requestDTO)
                 .retrieve()
                 .bodyToMono(ResponseDTO.class)
