@@ -1,0 +1,91 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.chat-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.pig-image {
+    width: 200px;
+    height: auto;
+}
+
+.bubbles {
+    display: flex;
+    flex-direction: column;
+    gap: 23px;
+}
+
+.speech-bubble {
+    position: relative;
+    background: #ffffff;
+    border: 2px solid #020202;
+    border-radius: 20px;
+    padding: 10px 20px;
+    width: 300px;
+    box-shadow: 2px 4px 6px rgba(0,0,0,0.1);
+}
+
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: -20px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent #2c2828 transparent transparent;
+}
+
+.speech-bubble.user input {
+    width: 200px;
+    padding: 6px;
+}
+
+.speech-bubble.user button {
+    padding: 6px 10px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.speech-bubble.ai {
+    background: #c6dfa3;
+    border-color: #070707;
+}
+
+.app-header {
+    text-align: center;
+    background: #c6dfa3;
+    padding: 20px 0;
+    border-bottom: 2px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #ff69b4;
+    text-shadow: 1px 1px #fff;
+}
+
+.app-header p {
+    margin: 5px 0 0;
+    font-style: italic;
+    color: #555;
+}
+
+body {
+    padding-top: 120px; /* make room for the fixed header */
+}
+
