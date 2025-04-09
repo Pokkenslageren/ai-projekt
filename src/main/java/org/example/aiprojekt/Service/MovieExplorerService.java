@@ -4,7 +4,7 @@ import org.example.aiprojekt.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-
+import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,17 +64,21 @@ public class MovieExplorerService {
                 throw new RuntimeException("No movie found with title: " + movieTitle);
             }
 
-            // get
+            // get details of movie
             details = tmdbService.getMovieDetails(movie.getId());
             if (details == null) {
                 throw new RuntimeException("Could not fetch details for movie: " + movieTitle);
             }
+
+            // get similar movies
+            List<MovieDTO> similarMovies = tmdbService.getSimilarMovies(movie.getId());
 
             // Generate AI analysis
             String prompt = generatePrompt(details);
             aiAnalysis = openAIService.getMovieAnalysis(prompt);
 
             response.put("movieDetails", details);
+            response.put("similarMovies", similarMovies);
             response.put("aiAnalysis", aiAnalysis);
 
             response.put("status", "success");

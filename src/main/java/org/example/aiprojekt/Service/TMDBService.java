@@ -1,5 +1,6 @@
 package org.example.aiprojekt.Service;
 
+import java.util.*;
 import org.example.aiprojekt.DTO.MovieDTO;
 import org.example.aiprojekt.DTO.MovieSearchResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,4 +41,15 @@ public class TMDBService {
                 .bodyToMono(MovieDTO.class)
                 .block();
     }
+
+        public List<MovieDTO> getSimilarMovies(Long movieId) {
+            MovieSearchResponseDTO response = tmdbWebClient.get()
+                    .uri("/movie/" + movieId + "/similar")
+                    .retrieve()
+                    .bodyToMono(MovieSearchResponseDTO.class)
+                    .block();
+
+            return response != null ? response.getResults() : Collections.emptyList();
+        }
+
 }
