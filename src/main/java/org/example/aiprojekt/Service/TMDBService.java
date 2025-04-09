@@ -1,11 +1,10 @@
 package org.example.aiprojekt.Service;
 
 import org.example.aiprojekt.DTO.MovieDTO;
+import org.example.aiprojekt.DTO.MovieSearchResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Service
 public class TMDBService {
@@ -18,14 +17,20 @@ public class TMDBService {
     }
 
     public MovieDTO searchMovie(String query) {
-        return tmdbWebClient.get()
+        MovieSearchResponseDTO searchResponse = tmdbWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/movie")
                         .queryParam("query", query)
                         .build())
                 .retrieve()
-                .bodyToMono(MovieDTO.class)
+                .bodyToMono(MovieSearchResponseDTO.class)
                 .block();
+
+        if (searchResponse != null && !searchResponse.getResults().isEmpty()) {
+            return searchResponse.getResults().get(0);
+        }
+
+        return null;
     }
 
     public MovieDTO getMovieDetails(Long movieId) {
