@@ -29,7 +29,7 @@ public class OpenAIService {
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setModel("gpt-4-turbo-preview");
         requestDTO.setTemperature(0.7);
-        requestDTO.setMaxTokens(1000);
+        requestDTO.setMaxTokens(100);
         requestDTO.setPresencePenalty(0);
 
         List<Message> messages = new ArrayList<>();
@@ -65,8 +65,8 @@ public class OpenAIService {
         requestDTO.setMaxTokens(200);
 
         List<Message> lstMessages = new ArrayList<>();
-        lstMessages.add(new Message("system", "You are a helpful assistant."));
-        lstMessages.add(new Message("user", "Give a list of 3 good French red wines"));
+        lstMessages.add(new Message("system", "You are a helpful and knowledgeable film critic and movie expert."));
+        lstMessages.add(new Message("user", "Give a list of 3 popular movies."));
         requestDTO.setMessages(lstMessages);
 
         ResponseDTO response = webClient.post()
