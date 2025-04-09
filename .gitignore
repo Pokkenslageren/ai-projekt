@@ -33,5 +33,5 @@ build/
 .vscode/
 
 ### api-keys ###
-/src/resources/application-dev.properties
+src/main/resources/application-dev.properties
 
