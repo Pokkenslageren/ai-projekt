@@ -1,9 +1,6 @@
 package org.example.aiprojekt.Service;
 
-<<<<<<< HEAD
-=======
 import com.fasterxml.jackson.databind.ObjectMapper;
->>>>>>> b8ddc8cc02d5e431f38a8ad03d865c10ea9a8745
 import org.example.aiprojekt.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,15 +20,9 @@ public class OpenAIService {
 
     @Autowired
     public OpenAIService(WebClient.Builder webClientBuilder) {
-<<<<<<< HEAD
-        this.webClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
-=======
         this.webClient = webClientBuilder
                 .baseUrl("https://api.openai.com/v1/chat/completions") // ✅ NO SLASH
                 .build();
-
-
->>>>>>> b8ddc8cc02d5e431f38a8ad03d865c10ea9a8745
     }
 
     @Value("${spring.ai.openai.api-key}")
@@ -70,26 +61,13 @@ public class OpenAIService {
     }
 
     public Map<String, Object> promptOpenAI(String userPrompt) {
-<<<<<<< HEAD
-
-        RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setModel("gpt-4-turbo"); // Skift evt. til en model, du har adgang til
-=======
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setModel("gpt-4-turbo");
->>>>>>> b8ddc8cc02d5e431f38a8ad03d865c10ea9a8745
         requestDTO.setTemperature(1.0);
         requestDTO.setMaxTokens(200);
 
         List<Message> lstMessages = new ArrayList<>();
         lstMessages.add(new Message("system", "You are a helpful and knowledgeable film critic and movie expert."));
-<<<<<<< HEAD
-        lstMessages.add(new Message("user", "Find film: " + userPrompt)); // Brug inputtet her
-        requestDTO.setMessages(lstMessages);
-
-        ResponseDTO response = webClient.post()
-                .uri("") // OpenAI kræver ingen ekstra URI efter base URL
-=======
         lstMessages.add(new Message("user", userPrompt)); // Clean, raw input
         requestDTO.setMessages(lstMessages);
 
@@ -104,7 +82,6 @@ public class OpenAIService {
 
         ResponseDTO response = webClient.post()
                 .uri("") // ✅ use "/" instead of ""
->>>>>>> b8ddc8cc02d5e431f38a8ad03d865c10ea9a8745
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(h -> h.setBearerAuth(openApiKey))
                 .bodyValue(requestDTO)
@@ -121,9 +98,4 @@ public class OpenAIService {
 
         return map;
     }
-
-<<<<<<< HEAD
-=======
-
->>>>>>> b8ddc8cc02d5e431f38a8ad03d865c10ea9a8745
 }

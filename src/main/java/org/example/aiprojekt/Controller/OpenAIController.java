@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-<<<<<<< HEAD
-=======
 import org.springframework.web.bind.annotation.RequestParam;
->>>>>>> b8ddc8cc02d5e431f38a8ad03d865c10ea9a8745
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -27,13 +24,6 @@ public class OpenAIController {
         return openApiKey;
     }
 
-<<<<<<< HEAD
-    @GetMapping("/test/{movie}")
-    public Map<String, Object> test(@PathVariable String movie) {
-        String prompt = "Find a movie like: " + movie;
-        return openAIService.promptOpenAI(prompt);
-    }
-=======
     @GetMapping("/test")
     public Map<String, Object> test(@RequestParam String movie) {
         System.out.println("🎬 /test endpoint hit with movie: " + movie);
@@ -41,6 +31,4 @@ public class OpenAIController {
         String prompt = "Find a movie like: " + movie;
         return openAIService.promptOpenAI(prompt);
     }
-
->>>>>>> b8ddc8cc02d5e431f38a8ad03d865c10ea9a8745
 }
