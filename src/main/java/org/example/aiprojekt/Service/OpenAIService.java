@@ -1,5 +1,6 @@
 package org.example.aiprojekt.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.aiprojekt.DTO.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,11 @@ public class OpenAIService {
 
     @Autowired
     public OpenAIService(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
+        this.webClient = webClientBuilder
+                .baseUrl("https://api.openai.com/v1/chat/completions") // ✅ NO SLASH
+                .build();
+
+
     }
 
     @Value("${spring.ai.openai.api-key}")
@@ -58,19 +63,27 @@ public class OpenAIService {
     }
 
     public Map<String, Object> promptOpenAI(String userPrompt) {
-
         RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setModel("gpt-4-turbo"); // Skift evt. til en model, du har adgang til
+        requestDTO.setModel("gpt-4-turbo");
         requestDTO.setTemperature(1.0);
         requestDTO.setMaxTokens(200);
 
         List<Message> lstMessages = new ArrayList<>();
         lstMessages.add(new Message("system", "You are a helpful and knowledgeable film critic and movie expert."));
-        lstMessages.add(new Message("user", "Find film: " + userPrompt)); // Brug inputtet her
+        lstMessages.add(new Message("user", userPrompt)); // Clean, raw input
         requestDTO.setMessages(lstMessages);
 
+        // 🔍 Log the full JSON request:
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonPayload = mapper.writeValueAsString(requestDTO);
+            System.out.println("🧠 Sending to OpenAI:\n" + jsonPayload);
+        } catch (Exception e) {
+            System.out.println("⚠️ Could not serialize requestDTO: " + e.getMessage());
+        }
+
         ResponseDTO response = webClient.post()
-                .uri("") // OpenAI kræver ingen ekstra URI efter base URL
+                .uri("") // ✅ use "/" instead of ""
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(h -> h.setBearerAuth(openApiKey))
                 .bodyValue(requestDTO)
@@ -87,5 +100,6 @@ public class OpenAIService {
 
         return map;
     }
+
 
 }
