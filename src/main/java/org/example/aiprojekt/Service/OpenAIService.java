@@ -57,7 +57,7 @@ public class OpenAIService {
         return result;
     }
 
-    public Map<String, Object> promptOpenAI() {
+    public Map<String, Object> promptOpenAI(String userPrompt) {
 
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setModel("gpt-4-turbo"); // Skift evt. til en model, du har adgang til
@@ -66,7 +66,7 @@ public class OpenAIService {
 
         List<Message> lstMessages = new ArrayList<>();
         lstMessages.add(new Message("system", "You are a helpful and knowledgeable film critic and movie expert."));
-        lstMessages.add(new Message("user", "Give a list of 3 popular movies."));
+        lstMessages.add(new Message("user", "Find film: " + userPrompt)); // Brug inputtet her
         requestDTO.setMessages(lstMessages);
 
         ResponseDTO response = webClient.post()
@@ -87,4 +87,5 @@ public class OpenAIService {
 
         return map;
     }
+
 }
