@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,10 +21,36 @@ public class MovieExplorerService {
     @Autowired
     private TMDBService tmdbService;
 
+    //Map til at holde styr på seneste forespørgsler
+    private final Map<String, Long> recentTitles = new ConcurrentHashMap<>();
+    private static final long TIME_LIMIT_MS = 10_000;
+
+    @Autowired
+    public MovieExplorerService(TMDBService tmdbService) {
+        this.tmdbService = tmdbService;
+    }
+
     public Map<String, Object> exploreMovie(String movieTitle) {
         if (movieTitle == null || movieTitle.trim().isEmpty()) {
             throw new IllegalArgumentException("Movie title cannot be empty");
         }
+
+        String normalizedTitle = movieTitle.trim().toLowerCase();
+        long now = System.currentTimeMillis();
+
+        // Hvis samme titel er forespurgt for nylig, smid fejl
+        if (recentTitles.containsKey(normalizedTitle)) {
+            long lastTime = recentTitles.get(normalizedTitle);
+            if (now - lastTime < TIME_LIMIT_MS) {
+                throw new RuntimeException("Denne forespørgsel er allerede sendt for nylig. Vent lidt og prøv igen.");
+            }
+        }
+
+        // Opdatér tidspunkt for forespørgsel
+        recentTitles.put(normalizedTitle, now);
+
+        // Send forespørgsel til TMDB
+        //return tmdbService.searchMovie(title);
 
         Map<String, Object> response = new HashMap<>();
         MovieDTO movie = null;
