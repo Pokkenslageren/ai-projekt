@@ -1,4 +1,4 @@
-Document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const sendBtn = document.getElementById("sendBtn");
     const userInput = document.getElementById("userInput");
     const responseOutput = document.getElementById("responseOutput");
@@ -10,23 +10,21 @@ Document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Disable button while processing
+        sendBtn.disabled = true;
         responseOutput.innerHTML = "🐷 Tænker...";
 
         try {
             const res = await fetch(`/api/movies/explore?title=${encodeURIComponent(movieName)}`);
+            const data = await res.json();
 
             if (!res.ok) {
-                if (res.status === 429) {
-                    throw new Error("Vent venligst et øjeblik før du søger igen!");
-                }
-                throw new Error("Kunne ikke finde filmen");
+                throw new Error(data.error || "Kunne ikke finde filmen");
             }
-
-            const data = await res.json();
 
             // format
             const formattedResponse = `
-                🎬 ${data.title} (${data.releaseDate}
+                🎬 ${data.title} (${data.releaseDate})
                 ${data.tagline ? `"${data.tagline}"` : ''}
                 
                 ⭐ Bedømmelse: ${data.rating}
@@ -44,6 +42,9 @@ Document.addEventListener("DOMContentLoaded", () => {
             responseOutput.innerHTML = formattedResponse;
         } catch (err) {
             responseOutput.innerHTML = `🐷 ${err.message}`;
+        } finally {
+            // Re-enable button after processing
+            sendBtn.disabled = false;
         }
     });
 });

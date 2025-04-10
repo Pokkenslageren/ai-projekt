@@ -54,7 +54,7 @@ public class MovieExplorerService {
             // Generate AI analysis
             String prompt = generatePrompt(details);
             Map<String, Object> aiAnalysis = openAIService.getMovieAnalysis(prompt);
-            
+
             response.put("title", details.getTitle());
             response.put("releaseDate", details.getReleaseDate());
             response.put("overview", details.getOverview());
@@ -91,11 +91,15 @@ public class MovieExplorerService {
 
         if (recentTitles.containsKey(normalizedTitle)) {
             long lastTime = recentTitles.get(normalizedTitle);
-            if (now - lastTime < TIME_LIMIT_MS) {
-                throw new RuntimeException("Denne forespørgsel er allerede sendt for nylig. Vent lidt og prøv igen.");
+            long timeElapsed = now - lastTime;
+            if (timeElapsed < TIME_LIMIT_MS) {
+                long waitTimeSeconds = (TIME_LIMIT_MS - timeElapsed) / 1000;
+                throw new RuntimeException("Vent venligst " + waitTimeSeconds + " sekunder før du søger igen.");
             }
         }
         recentTitles.put(normalizedTitle, now);
+        // Cleanup
+        recentTitles.entrySet().removeIf(entry -> (now - entry.getValue() > TIME_LIMIT_MS));
     }
 // CHATGPT PROMPT:
 private String generatePrompt(MovieDTO movie) {
