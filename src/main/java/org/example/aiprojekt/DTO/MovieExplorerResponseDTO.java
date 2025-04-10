@@ -1,52 +1,21 @@
 package org.example.aiprojekt.DTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 
-public class MovieDTO {
-    @JsonProperty("id")
-    private Long id;
-
-    @JsonProperty("title")
+public class MovieExplorerResponseDTO {
     private String title;
-
-    @JsonProperty("overview")
-    private String overview;
-
-    @JsonProperty("tagline")
-    private String tagline;
-
-    @JsonProperty("release_date")
     private String releaseDate;
-
-    @JsonProperty("runtime")
-    private Integer runtime;
-
-    @JsonProperty("genres")
+    private String overview;
+    private String tagline;
+    private String runtime;
     private String[] genres;
-
-    @JsonProperty("production_countries")
     private String originCountry;
-
-    @JsonProperty("budget")
     private Long budget;
-
-    @JsonProperty("revenue")
     private Long revenue;
+    private Double rating;
+    private String interestingTrivia;
+    private List<MovieDTO> similarMovies;
 
-    @JsonProperty("vote_average")
-    private Double voteAverage;
-
-    @JsonProperty("poster_path")
-    private String posterPath;
-
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -54,6 +23,14 @@ public class MovieDTO {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public String getOverview() {
@@ -72,19 +49,11 @@ public class MovieDTO {
         this.tagline = tagline;
     }
 
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public Integer getRuntime() {
+    public String getRuntime() {
         return runtime;
     }
 
-    public void setRuntime(Integer runtime) {
+    public void setRuntime(String runtime) {
         this.runtime = runtime;
     }
 
@@ -120,19 +89,27 @@ public class MovieDTO {
         this.revenue = revenue;
     }
 
-    public Double getVoteAverage() {
-        return voteAverage;
+    public Double getRating() {
+        return rating;
     }
 
-    public void setVoteAverage(Double voteAverage) {
-        this.voteAverage = voteAverage;
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
-    public String getPosterPath() {
-        return posterPath;
+    public String getInterestingTrivia() {
+        return interestingTrivia;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
+    public void setInterestingTrivia(String interestingTrivia) {
+        this.interestingTrivia = interestingTrivia;
+    }
+
+    public List<MovieDTO> getSimilarMovies() {
+        return similarMovies;
+    }
+
+    public void setSimilarMovies(List<MovieDTO> similarMovies) {
+        this.similarMovies = similarMovies;
     }
 }
