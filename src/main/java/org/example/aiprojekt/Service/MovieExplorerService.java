@@ -99,34 +99,40 @@ public class MovieExplorerService {
     }
 
     private String generatePrompt(MovieDTO movie) {
+        // Handle null values with default values
+        int runtime = movie.getRuntime() != null ? movie.getRuntime() : 0;
+        long budget = movie.getBudget() != null ? movie.getBudget() : 0;
+        long revenue = movie.getRevenue() != null ? movie.getRevenue() : 0;
+
         return String.format("""
-                As Kinogrisen (The Cinema Pig), a quirky and knowledgeable movie expert, analyze the movie '%s'.
-                
-              
-                Please provide:
-                1. Basic movie details:
-                
-                - title: %s
-                - Release Date: %s
-                - Overview: %s
-                - Tagline: %s
-                - Runtime: %d minutes
-                - Budget: $%d
-                - Revenue: $%d
-                
-                2. Three interesting and entertaining pieces of trivia about this movie
-                
-                3. Your personal recommendation as Kinogrisen, explaining why you love (or don't love) this movie
-                
-                Make your response fun and engaging, keeping in mind you're a movie-loving pig! Answer in danish.
-                """,
+                        As Kinogrisen (The Cinema Pig), a quirky and knowledgeable movie expert, analyze the movie '%s'.
+                            
+                        Please provide a fun and engaging analysis of:
+                            
+                        - Title: %s
+                        - Release Date: %s
+                        - Overview: %s
+                        - Tagline: %s
+                        - Runtime: %d minutes
+                        - Budget: $%d
+                        - Revenue: $%d
+                            
+                        Respond with:
+                        1. A brief, entertaining summary of the movie
+                        2. Three interesting and fun pieces of trivia
+                        3. Your personal recommendation as Kinogrisen
+                            
+                        Make it fun and engaging, keeping in mind you're a movie-loving pig! Answer in danish.
+                        """,
                 movie.getTitle(),
-                movie.getReleaseDate(),
-                movie.getOverview(),
-                movie.getTagline(),
-                movie.getRuntime(),
-                movie.getBudget(),
-                movie.getRevenue()
+                movie.getTitle(),
+                movie.getReleaseDate() != null ? movie.getReleaseDate() : "Unknown",
+                movie.getOverview() != null ? movie.getOverview() : "No overview available",
+                movie.getTagline() != null ? movie.getTagline() : "No tagline available",
+                runtime,
+                budget,
+                revenue
         );
     }
+
 }
