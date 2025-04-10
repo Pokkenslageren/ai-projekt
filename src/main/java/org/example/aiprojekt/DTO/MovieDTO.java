@@ -24,7 +24,7 @@ public class MovieDTO {
     @JsonProperty("genres")
     private String[] genres;
 
-    @JsonProperty("production_countries")
+    @JsonProperty("origin_country")
     private String originCountry;
 
     @JsonProperty("budget")
