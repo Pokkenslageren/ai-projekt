@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
         responseOutput.innerHTML = "🐷 Tænker...";
 
         try {
-            const res = await fetch(`/kinogrisen?movie=${encodeURIComponent(movieName)}`);
+            const res = await fetch(`/api/movies/explore?title=${encodeURIComponent(movieName)}`);
+
+            // const res = await fetch(`/kinogrisen?movie=${encodeURIComponent(movieName)}`);
 
             const data = await res.json();
 
