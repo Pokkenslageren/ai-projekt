@@ -30,13 +30,13 @@ public class MovieExplorerService {
     public MovieExplorerService(TMDBService tmdbService) {
         this.tmdbService = tmdbService;
     }
-
-    public MovieExplorerResponseDTO exploreMovie(String movieTitle) {
+    public Map<String, Object> exploreMovie(String movieTitle) {
         if (movieTitle == null || movieTitle.trim().isEmpty()) {
             throw new IllegalArgumentException("Movie title cannot be empty");
         }
 
         validateRequestTiming(movieTitle);
+        Map<String, Object> response = new HashMap<>();
 
         try {
             // Get initial movie data
@@ -55,22 +55,27 @@ public class MovieExplorerService {
             String prompt = generatePrompt(details);
             Map<String, Object> aiAnalysis = openAIService.getMovieAnalysis(prompt);
 
-            // Create response DTO
-            MovieExplorerResponseDTO response = new MovieExplorerResponseDTO();
-            response.setTitle(details.getTitle());
-            response.setReleaseDate(details.getReleaseDate());
-            response.setOverview(details.getOverview());
-            response.setTagline(details.getTagline());
-            response.setRuntime(details.getRuntime() + " minutes");
-            response.setGenres(details.getGenres());
-            response.setOriginCountry(details.getOriginCountry());
-            response.setBudget(details.getBudget());
-            response.setRevenue(details.getRevenue());
-            response.setRating(details.getVoteAverage());
-            response.setInterestingTrivia((String) aiAnalysis.get("analysis"));
-            response.setSimilarMovies(similarMovies.stream()
+            // Structure the response
+            response.put("title", details.getTitle());
+            response.put("releaseDate", details.getReleaseDate());
+            response.put("overview", details.getOverview());
+            response.put("tagline", details.getTagline());
+            response.put("runtime", details.getRuntime() + " minutes");
+            response.put("genres", String.join(", ", details.getGenres()));
+            response.put("originCountry", details.getOriginCountry());
+            response.put("budget", details.getBudget());
+            response.put("revenue", details.getRevenue());
+            response.put("rating", details.getVoteAverage() + "/10");
+            response.put("interestingTrivia", aiAnalysis.get("analysis"));
+            response.put("similarMovies", similarMovies.stream()
                     .limit(3)
+                    .map(m -> Map.of(
+                            "title", m.getTitle(),
+                            "releaseDate", m.getReleaseDate(),
+                            "rating", m.getVoteAverage()
+                    ))
                     .collect(Collectors.toList()));
+            response.put("status", "success");
 
             return response;
 
