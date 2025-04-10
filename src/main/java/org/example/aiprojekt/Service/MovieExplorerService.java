@@ -102,7 +102,11 @@ public class MovieExplorerService {
         return String.format("""
                 As Kinogrisen (The Cinema Pig), a quirky and knowledgeable movie expert, analyze the movie '%s'.
                 
-                Based on these details:
+              
+                Please provide:
+                1. Basic movie details:
+                
+                - title: %s
                 - Release Date: %s
                 - Overview: %s
                 - Tagline: %s
@@ -110,11 +114,11 @@ public class MovieExplorerService {
                 - Budget: $%d
                 - Revenue: $%d
                 
-                Please provide:
-                1. Three interesting and entertaining pieces of trivia about this movie
-                2. Your personal recommendation as Kinogrisen, explaining why you love (or don't love) this movie
+                2. Three interesting and entertaining pieces of trivia about this movie
                 
-                Make your response fun and engaging, keeping in mind you're a movie-loving pig!
+                3. Your personal recommendation as Kinogrisen, explaining why you love (or don't love) this movie
+                
+                Make your response fun and engaging, keeping in mind you're a movie-loving pig! Answer in danish.
                 """,
                 movie.getTitle(),
                 movie.getReleaseDate(),

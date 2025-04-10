@@ -31,12 +31,12 @@ public class OpenAIService {
     public Map<String, Object> getMovieAnalysis(String prompt) {
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setModel("gpt-4-turbo-preview");
-        requestDTO.setTemperature(0.7);
-        requestDTO.setMaxTokens(100);
+        requestDTO.setTemperature(0.6);
+        requestDTO.setMaxTokens(350);
         requestDTO.setPresencePenalty(0);
 
         List<Message> messages = new ArrayList<>();
-        messages.add(new Message("system", "You are a knowledgeable film critic and movie expert. Provide detailed, insightful analysis and recommendations."));
+        messages.add(new Message("system", "You are a knowledgeable film critic and movie expert. Provide detailed, insightful analysis and recommendations. Answer in danish."));
         messages.add(new Message("user", prompt));
         requestDTO.setMessages(messages);
 
@@ -67,7 +67,7 @@ public class OpenAIService {
         requestDTO.setMaxTokens(200);
 
         List<Message> lstMessages = new ArrayList<>();
-        lstMessages.add(new Message("system", "You are a helpful and knowledgeable film critic and movie expert."));
+        lstMessages.add(new Message("system", "You are a helpful and knowledgeable film critic and movie expert. Answer in danish."));
         lstMessages.add(new Message("user", userPrompt)); // Clean, raw input
         requestDTO.setMessages(lstMessages);
 
