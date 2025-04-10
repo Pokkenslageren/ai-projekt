@@ -54,8 +54,7 @@ public class MovieExplorerService {
             // Generate AI analysis
             String prompt = generatePrompt(details);
             Map<String, Object> aiAnalysis = openAIService.getMovieAnalysis(prompt);
-
-            // Structure the response
+            
             response.put("title", details.getTitle());
             response.put("releaseDate", details.getReleaseDate());
             response.put("overview", details.getOverview());
