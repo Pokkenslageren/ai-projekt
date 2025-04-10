@@ -38,9 +38,6 @@ public class MovieDTO {
     @JsonProperty("genres")
     private List<Genre> genres;
 
-    @JsonProperty("origin_country")
-    private String originCountry;
-
     @JsonProperty("budget")
     private Long budget;
 
@@ -74,9 +71,6 @@ public class MovieDTO {
 
     public List<Genre> getGenres() { return genres; }
     public void setGenres(List<Genre> genres) { this.genres = genres; }
-
-    public String getOriginCountry() { return originCountry; }
-    public void setOriginCountry(String originCountry) { this.originCountry = originCountry; }
 
     public Long getBudget() { return budget; }
     public void setBudget(Long budget) { this.budget = budget; }
