@@ -5,11 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.text.NumberFormat;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieExplorerService {
@@ -30,96 +31,104 @@ public class MovieExplorerService {
         this.tmdbService = tmdbService;
     }
 
-    public Map<String, Object> exploreMovie(String movieTitle) {
+    public MovieExplorerResponseDTO exploreMovie(String movieTitle) {
         if (movieTitle == null || movieTitle.trim().isEmpty()) {
             throw new IllegalArgumentException("Movie title cannot be empty");
         }
 
+        validateRequestTiming(movieTitle);
+
+        try {
+            // Get initial movie data
+            MovieDTO movie = tmdbService.searchMovie(movieTitle);
+            if (movie == null) {
+                throw new RuntimeException("No movie found with title: " + movieTitle);
+            }
+
+            // Get detailed movie info
+            MovieDTO details = tmdbService.getMovieDetails(movie.getId());
+
+            // Get similar movies
+            List<MovieDTO> similarMovies = tmdbService.getSimilarMovies(movie.getId());
+
+            // Generate AI analysis
+            String prompt = generatePrompt(details);
+            Map<String, Object> aiAnalysis = openAIService.getMovieAnalysis(prompt);
+
+            // Create response DTO
+            MovieExplorerResponseDTO response = new MovieExplorerResponseDTO();
+            response.setTitle(details.getTitle());
+            response.setReleaseDate(details.getReleaseDate());
+            response.setOverview(details.getOverview());
+            response.setTagline(details.getTagline());
+            response.setRuntime(details.getRuntime() + " minutes");
+            response.setGenres(details.getGenres());
+            response.setOriginCountry(details.getOriginCountry());
+            response.setBudget(details.getBudget());
+            response.setRevenue(details.getRevenue());
+            response.setRating(details.getVoteAverage());
+            response.setInterestingTrivia((String) aiAnalysis.get("analysis"));
+            response.setSimilarMovies(similarMovies.stream()
+                    .limit(3)
+                    .collect(Collectors.toList()));
+
+            return response;
+
+        } catch (WebClientResponseException e) {
+            throw new RuntimeException("Failed to communicate with external API: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
+    private void validateRequestTiming(String movieTitle) {
         String normalizedTitle = movieTitle.trim().toLowerCase();
         long now = System.currentTimeMillis();
 
-        // Hvis samme titel er forespurgt for nylig, smid fejl
         if (recentTitles.containsKey(normalizedTitle)) {
             long lastTime = recentTitles.get(normalizedTitle);
             if (now - lastTime < TIME_LIMIT_MS) {
                 throw new RuntimeException("Denne forespørgsel er allerede sendt for nylig. Vent lidt og prøv igen.");
             }
         }
-
-        // Opdatér tidspunkt for forespørgsel
         recentTitles.put(normalizedTitle, now);
-
-        // Send forespørgsel til TMDB
-        //return tmdbService.searchMovie(title);
-
-        Map<String, Object> response = new HashMap<>();
-        MovieDTO movie = null;
-        MovieDTO details = null;
-        Map<String, Object> aiAnalysis = null;
-
-        try {
-            // search
-            movie = tmdbService.searchMovie(movieTitle);
-            if (movie == null) {
-                throw new RuntimeException("No movie found with title: " + movieTitle);
-            }
-
-            // get
-            details = tmdbService.getMovieDetails(movie.getId());
-            if (details == null) {
-                throw new RuntimeException("Could not fetch details for movie: " + movieTitle);
-            }
-
-            // Generate AI analysis
-            String prompt = generatePrompt(details);
-            aiAnalysis = openAIService.getMovieAnalysis(prompt);
-
-            response.put("movieDetails", details);
-            response.put("aiAnalysis", aiAnalysis);
-
-            response.put("status", "success");
-            response.put("query", movieTitle);
-
-        } catch (WebClientResponseException e) {
-            LOGGER.log(Level.SEVERE, "API call failed: " + e.getMessage(), e);
-            throw new RuntimeException("Failed to communicate with external API: " + e.getMessage());
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unexpected error: " + e.getMessage(), e);
-            throw new RuntimeException("An unexpected error occurred: " + e.getMessage());
-        }
-
-        return response;
     }
 // CHATGPT PROMPT:
-    private String generatePrompt(MovieDTO movie) {
-        return String.format(
-                """
-                Based on the movie '%s' (%s), please provide:
-                
-                1. THEMES AND ANALYSIS:
-                - Main themes and motifs
-                - Directorial style and cinematographic elements
-                - Cultural or historical significance
-                
-                2. INTERESTING TRIVIA:
-                - Three fascinating behind-the-scenes facts
-                - Production challenges or unique aspects
-                - Impact on the film industry
-                
-                3. SIMILAR MOVIE RECOMMENDATIONS:
-                - Three specific movie recommendations
-                - Brief explanation for each recommendation
-                - Why fans of this movie would enjoy them
-                
-                Movie Overview for context: %s
-                
-                Please structure your response clearly with these three sections.
-                """,
-                movie.getTitle(),
-                movie.getReleaseDate(),
-                movie.getOverview()
-        );
+private String generatePrompt(MovieDTO movie) {
+    return String.format("""
+            As Kinogrisen (The Cinema Pig), a quirky and knowledgeable movie expert, analyze the movie '%s'.
+            
+            Based on these details:
+            - Release Date: %s
+            - Overview: %s
+            - Tagline: %s
+            - Runtime: %d minutes
+            - Budget: $%d
+            - Revenue: $%d
+            
+            Please provide:
+            1. Three interesting and entertaining pieces of trivia about this movie
+            2. Your personal recommendation as Kinogrisen, explaining why you love (or don't love) this movie
+            
+            Make your response fun and engaging, keeping in mind you're a movie-loving pig!
+            """,
+            movie.getTitle(),
+            movie.getReleaseDate(),
+            movie.getOverview(),
+            movie.getTagline(),
+            movie.getRuntime(),
+            movie.getBudget(),
+            movie.getRevenue()
+    );
+}
+
+    private String formatNumber(Long number) {
+        if (number == null || number == 0) {
+            return "N/A";
+        }
+        return NumberFormat.getNumberInstance(Locale.US).format(number);
     }
+
 
     // matches criteria?
     private boolean isMovieMatch(MovieDTO movie, String searchTitle) {

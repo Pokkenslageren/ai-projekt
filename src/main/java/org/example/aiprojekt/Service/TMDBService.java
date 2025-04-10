@@ -5,6 +5,8 @@ import org.example.aiprojekt.DTO.MovieSearchResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TMDBService {
@@ -39,5 +41,17 @@ public class TMDBService {
                 .retrieve()
                 .bodyToMono(MovieDTO.class)
                 .block();
+    }
+
+    public List<MovieDTO> getSimilarMovies(Long movieId) {
+        return tmdbWebClient.get()
+                .uri("/movie/" + movieId + "/similar")
+                .retrieve()
+                .bodyToMono(MovieSearchResponseDTO.class)
+                .block()
+                .getResults()
+                .stream()
+                .limit(3) // Only get top 3 similar movies
+                .collect(Collectors.toList());
     }
 }
