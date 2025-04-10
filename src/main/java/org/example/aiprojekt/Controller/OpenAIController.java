@@ -16,6 +16,7 @@ public class OpenAIController {
     @Autowired
     OpenAIService openAIService;
 
+    /*
     @Value("${spring.ai.openai.api-key}")
     private String openApiKey;
 
@@ -23,9 +24,10 @@ public class OpenAIController {
     public String key() {
         return openApiKey;
     }
+    */
 
-    @GetMapping("/test")
-    public Map<String, Object> test(@RequestParam String movie) {
+    @GetMapping("/kinogrisen")
+    public Map<String, Object> run(@RequestParam String movie) {
         System.out.println("🎬 /test endpoint hit with movie: " + movie);
 
         String prompt = "Find a movie like: " + movie;
