@@ -1,4 +1,4 @@
-ocument.addEventListener("DOMContentLoaded", () => {
+Document.addEventListener("DOMContentLoaded", () => {
     const sendBtn = document.getElementById("sendBtn");
     const userInput = document.getElementById("userInput");
     const responseOutput = document.getElementById("responseOutput");
