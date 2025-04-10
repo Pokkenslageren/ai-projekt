@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sendBtn.addEventListener("click", async () => {
         const movieName = userInput.value.trim();
         if (!movieName) {
-            responseOutput.innerHTML = "🐷 Please enter a movie!";
+            responseOutput.innerHTML = "🐷 Skriv venligst en film!";
             return;
         }
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const reply = data.Choices?.[0]?.message?.content || "🐷 Intet svar!";
             responseOutput.innerHTML = `🐷 ${reply}`;
         } catch (err) {
-            responseOutput.innerHTML = `🐷 Error: ${err.message}`;
+            responseOutput.innerHTML = `🐷 Fejl: ${err.message}`;
         }
     });
 });
