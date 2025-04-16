@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Disable button while processing
         sendBtn.disabled = true;
-        responseOutput.innerHTML = "🐷 Tænker...";
+        responseOutput.innerHTML = "🐷 Der tænkes...";
 
         try {
             const res = await fetch(`/api/movies/explore?title=${encodeURIComponent(movieName)}`);
